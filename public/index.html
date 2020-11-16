@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Description" content="Aplikasi Premier League PWA">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link rel="apple-touch-icon" href="images/icons/maskable-icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#37003c" />
+    <title>Barclays Premier League</title>
+</head>
+
+<body>
+    <header>
+        <ul class="sidenav" id="nav-mobile"></ul>
+        <div class="navbar navbar-fixed">
+            <nav class=".color-dark-league" role="navigation">
+                <div class="nav-wrapper container">
+                    <a href="#" class="brand-logo" id="logo-container">Premier League</a>
+                    <a href="#" class="sidenav-trigger" data-target="nav-mobile"><i class="material-icons">menu</i></a>
+                    <ul class="topnav right hide-on-med-and-down"></ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container" id="body-content"></div>
+    </main>
+
+    <footer class="page-footer color-dark-league">
+        <div class="footer-copyright">
+            <div class="container">
+                2020 &#169; Azmi Husaini
+            </div>
+        </div>
+    </footer>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/nav.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/idb.js"></script>
+    <script type="text/javascript" src="js/idb-tim.js"></script>
+</body>
+
+</html>
