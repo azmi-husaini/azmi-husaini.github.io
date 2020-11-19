@@ -1,0 +1,5 @@
+Firebase Hosting
+https://premier-league-mi-2.web.app/
+
+Github Pages
+https://github.com/azmi-husaini/azmi-husaini.github.io
