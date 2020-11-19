@@ -1,76 +1,61 @@
-const CACHE_NAME = "premier-league-v1";
-var urlsToCache = [
-    "/",
-    "/index.html",
-    "/manifest.json",
-    "/layout/nav.html",
-    "/pages/clubs.html",
-    "/pages/favorites.html",
-    "/pages/home.html",
-    "/pages/standings.html",
-    "/css/materialize.min.css",
-    "/css/style.css",
-    "/js/api.js",
-    "/js/idb-tim.js",
-    "/js/idb.js",
-    "/js/main.js",
-    "/js/materialize.min.js",
-    "/js/nav.js",
-    "/js/push.js",
-    "/images/favicon.ico",
-    "/images/beranda.svg",
-    "/images/icons/maskable-icon-96.png",
-    "/images/icons/maskable-icon-192.png",
-    "/images/icons/maskable-icon-512.png",
-    "https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;600&display=swap",
-    "https://fonts.gstatic.com/s/merriweathersans/v13/2-c99IRs1JiJN1FRAMjTN5zd9vgsFHX1QjXp8Bte.woff2",
-    "https://fonts.googleapis.com/icon?family=Material+Icons"
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.3/workbox-sw.js');
+const precaching = [
+    { url: "/", revision: "1" },
+    { url: "/index.html", revision: "1" },
+    { url: "/manifest.json", revision: "1" },
+    { url: "/layout/nav.html", revision: "1" },
+    { url: "/pages/clubs.html", revision: "1" },
+    { url: "/pages/favorites.html", revision: "1" },
+    { url: "/pages/home.html", revision: "1" },
+    { url: "/pages/standings.html", revision: "1" },
+    { url: "/css/materialize.min.css", revision: "1" },
+    { url: "/css/style.css", revision: "1" },
+    { url: "/js/api.js", revision: "1" },
+    { url: "/js/idb.js", revision: "1" },
+    { url: "/js/idb-tim.js", revision: "1" },
+    { url: "/js/main.js", revision: "1" },
+    { url: "/js/materialize.min.js", revision: "1" },
+    { url: "/js/nav.js", revision: "1" },
+    { url: "/js/push.js", revision: "1" },
+    { url: "/images/favicon.ico", revision: "1" },
+    { url: "/images/icons/maskable-icon-96.png", revision: "1" },
+    { url: "/images/icons/maskable-icon-192.png", revision: "1" },
+    { url: "/images/icons/maskable-icon-512.png", revision: "1" },
+    { url: "https://fonts.gstatic.com/s/merriweathersans/v13/2-c99IRs1JiJN1FRAMjTN5zd9vgsFHX1QjXp8Bte.woff2", revision: "1" },
+    { url: "https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;600&display=swap", revision: "1" },
+    { url: "https://fonts.googleapis.com/icon?family=Material+Icons", revision: "1" },
 ];
 
-self.addEventListener("install", function(event) {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(function(cache) {
-            return cache.addAll(urlsToCache);
-        })
-    );
+workbox.precaching.precacheAndRoute(precaching, {
+    // Ignore all URL parameters.
+    ignoreURLParametersMatching: [/.*/],
 });
 
-self.addEventListener("fetch", function(event) {
-    var base_url = "https://api.football-data.org/v2";
+workbox.routing.registerRoute(
+    /\.(?:png|gif|jpg|jpeg|svg)$/,
+    new workbox.strategies.CacheFirst({
+        cacheName: "cache-images",
+        plugins: [
+            new workbox.expiration.ExpirationPlugin({
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+                maxEntries: 100,
+            }),
+        ],
+    })
+);
 
-    if (event.request.url.indexOf(base_url) > -1) {
-        event.respondWith(
-            caches.open(CACHE_NAME).then(function(cache) {
-                return fetch(event.request).then(function(response) {
-                    cache.put(event.request.url, response.clone());
+workbox.routing.registerRoute(
+    ({ url }) => url.origin === "https://api.football-data.org",
+    new workbox.strategies.StaleWhileRevalidate({
+        cacheName: "cache-api",
+        plugins: [
+            new workbox.expiration.ExpirationPlugin({
+                maxAgeSeconds: 60 * 60,
+            }),
+        ],
+    })
+);
 
-                    return response;
-                })
-            })
-        );
-    } else {
-        event.respondWith(
-            caches.match(event.request, { ignoreSearch: true }).then(function(response) {
-                return response || fetch(event.request);
-            })
-        )
-    }
-});
-
-self.addEventListener("activate", function(event) {
-    event.waitUntil(
-        caches.keys().then(function(cacheNames) {
-            return Promise.all(
-                cacheNames.map(function(cacheName) {
-                    if (cacheName != CACHE_NAME) {
-                        console.log(`ServiceWorker: cache ${cacheName} dihapus`);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
-});
 
 self.addEventListener("push", function(event) {
     let body;
